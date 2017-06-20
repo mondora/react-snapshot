@@ -22,6 +22,18 @@ export default (protocol, host, path, delay) => {
       },
       virtualConsole: jsdom.createVirtualConsole().sendTo(console),
       created: (err, window) => {
+
+        /**
+         * fix: `matchMedia` not present, required when the project is using `antd`
+         */
+        window.matchMedia = window.matchMedia || function () {
+          return {
+            matches: false,
+            addListener: function () { },
+            removeListener: function () { }
+          }
+        }
+
         if (err) reject(err)
         window.reactSnapshotRender = () => {
           reactSnapshotRenderCalled = true
